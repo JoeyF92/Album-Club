@@ -94,8 +94,12 @@
     <div class="slidecontainer">
       <form action="/rating/{{group_id}}/{{week}}" method="post"> 
         <label for="rating"> </label>
-        <input type="range" min="1" max="100" value="{{ratings_dict['slider_value']}}" class="slider" name="rating" id="rating_slider">
-        <button class="form-button slide-button" type="submit">
+        {% if 1 + 1 == 2 %}
+          <input type="range" min="1" max="100" value="{{ratings_dict['slider_value']}}" class="slider" name="rating" id="rating_slider">
+        {% else %}
+          <input type="range" min="1" max="100" value="50" class="slider" name="rating" id="rating_slider">
+        {% endif %}
+          <button class="form-button slide-button" type="submit">
           {% if ratings_dict['user_rating'] %} 
             Update 
           {% else %}
@@ -108,6 +112,10 @@
   
         Your rating: <span id="rating_text"></span></p> </>
       
+      {% else %}
+
+        Your rating: <span id="rating_text"></span></p> </>
+
       {% endif %} 
       
       <!-- Adding rating logic in here --> 
@@ -117,60 +125,57 @@
     </div>
     
     
-
-    <section class="comments-box">
-      {% for i in range(comments|length) %}
-        <!-- show comments -check if it's an edited version- if so append edited to it -->
-        <div class="comment-container">
-          <div class="comment-col1"> 
-            <div class="comment-pic">
-              <img src="{{comments[i]['image']}}">
-            </div>
-          </div>
-          <div class="comment-col2">
-             <div class="top-line-comment">
-                <div class="comment-name">
-                  {{comments[i]['username']}}
-                </div> 
-                <div class="comment-timestamp"> 
-                  {{comments[i]['Timestamp']}} 
-                </div>
-              </div> 
-              <div class="comment-comment"> 
-                {{ comments[i]['comment'] }} 
-                {% if comments[i]['edited'] == 1 and not comments[i]['comment'] == '(comment deleted)'  %}      
-                  <p> <strong> (edited) </strong>  </p>
-                {% endif %} 
-                 <!-- show edit and delete comment buttons if the comment belongs to user -->
-                 {% if comments[i]['user_id'] == user and not comments[i]['comment'] == '(comment deleted)' %}
-                    <button class="edit-comment edit-button"> Edit </button>
-                    <div class="edit-reveal">
-                      <!--delete comment -->
-                     
-
-                      <!--edit comment -->    
-                      <form action="/comment/{{group_id}}/{{week}}" method="post">
-                        <label for="comment"> </label>
-                        <textarea class="comment-comment" type="text" id="comment" name="comment" placeholder="{{ comments[i]['comment'] }}"> </textarea>
-                        <input type="hidden" id="comment" name="comment_id" value="{{comments[i]['comment_id']}}">
-                        <input type="submit" class="comment-edit" name="submit_button" value="Edit"/>
-                        <input class="comment-del" type="submit" name="submit_button" value="Delete" />
-                      </form>
-                    </div>
-                  
-
-                  {% endif %}
+    {% if comments|length > 0 %}
+      <section class="comments-box">
+        {% for i in range(comments|length) %}
+          <!-- show comments -check if it's an edited version- if so append edited to it -->
+          <div class="comment-container">
+            <div class="comment-col1"> 
+              <div class="comment-pic">
+                <img src="{{comments[i]['image']}}">
               </div>
-              <hr>
+            </div>
+            <div class="comment-col2">
+              <div class="top-line-comment">
+                  <div class="comment-name">
+                    {{comments[i]['username']}}
+                  </div> 
+                  <div class="comment-timestamp"> 
+                    {{comments[i]['Timestamp']}} 
+                  </div>
+                </div> 
+                <div class="comment-comment"> 
+                  {{ comments[i]['comment'] }} 
+                  {% if comments[i]['edited'] == 1 and not comments[i]['comment'] == '(comment deleted)'  %}      
+                    <p> <strong> (edited) </strong>  </p>
+                  {% endif %} 
+                  <!-- show edit and delete comment buttons if the comment belongs to user -->
+                  {% if comments[i]['user_id'] == user and not comments[i]['comment'] == '(comment deleted)' %}
+                      <button class="edit-comment edit-button"> Edit </button>
+                      <div class="edit-reveal">
+                        <!--delete comment -->
+                      
+
+                        <!--edit comment -->    
+                        <form action="/comment/{{group_id}}/{{week}}" method="post">
+                          <label for="comment"> </label>
+                          <textarea class="comment-comment" type="text" id="comment" name="comment" placeholder="{{ comments[i]['comment'] }}"> </textarea>
+                          <input type="hidden" id="comment" name="comment_id" value="{{comments[i]['comment_id']}}">
+                          <input type="submit" class="comment-edit" name="submit_button" value="Edit"/>
+                          <input class="comment-del" type="submit" name="submit_button" value="Delete" />
+                        </form>
+                      </div>
+                    
+
+                    {% endif %}
+                </div>
+                <hr>
+            </div>
+            
           </div>
-          
-        </div>
-      {% endfor %}
-
-
-      
-    </section>
-
+        {% endfor %}
+      </section>
+    {% endif %}
 
       <form action="/comment/{{group_id}}/{{week}}" method="post" class="leave-comment">
         <label class="leave-comment-text" for="comment"> Leave a comment.. </label>

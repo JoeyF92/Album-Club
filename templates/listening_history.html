@@ -30,7 +30,7 @@
                     <img src="{{ranked_history[i]['artwork']}}">
                     <h6 class="rank-no"> {{i+1}} </h6>
                 </div>
-                <p> From "{{ranked_history[i]['group_name']}}" group </p>
+                <p> <a href="/new_week/{{ranked_history[i]['q1group_id']}}"> {{ranked_history[i]['group_name']}}</a> group </p>
                 <p> Your Rating: {{ranked_history[i]['rating']}} </p>
             </div>
         {% endfor %}

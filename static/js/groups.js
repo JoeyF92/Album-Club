@@ -37,7 +37,7 @@ for (let i=0; i < length; i++)
 //rating slider logic:
 var ratingSlider = document.getElementById("rating_slider");
 var ratingText = document.getElementById("rating_text");
-ratingText.innerHTML = ratingSlider.value;
+
 
 ratingSlider.oninput = function(){
   ratingText.innerHTML = this.value;

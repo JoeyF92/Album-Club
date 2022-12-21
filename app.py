@@ -261,8 +261,8 @@ def album_submission(group_id, week):
             flash("Please enter an artist name", "error")
             return redirect(request.url) 
         #get artist, title, reason and url from from form request
-        artist = request.form.get("album_artist")
-        album = request.form.get("album_title")
+        artist = str.title(request.form.get("album_artist"))
+        album = str.title(request.form.get("album_title"))
         reason = request.form.get("reason")
         #retrive uploaded image - and send to cloudinary
         artwork = image_upload(request)
@@ -301,7 +301,9 @@ def new_week_blank():
 @app.route("/new_week/<group_id>")
 @login_required
 def new_week_blank_week(group_id):
-    return redirect("/")
+    latest_week = db.execute("SELECT week_tracker FROM week WHERE group_id=?", group_id)
+    latest_week = str(latest_week[0]['week_tracker'])
+    return redirect("/new_week/" + group_id + "/" + latest_week)
 
 #get route for showcasing current aotw, post for generating a new one:
 @app.route("/new_week/<group_id>/<week>", methods=["GET", "POST"])
