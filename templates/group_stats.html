@@ -62,7 +62,7 @@
                         Week {{week_order[i]['week']}}
                         </a> 
                         (Chosen By {{week_order[i]['username']}})</p>
-                    <p> Group Rating: {{week_order[i]['group_rating']}} </p>
+                    <p> Group Rating: {{week_order[i]['group_rating']|round(2) }} </p>
                     <p> Your Rating:
                         {% if week_order[i]['user_rating'] != False %}
                             {{week_order[i]['user_rating']}}
@@ -95,7 +95,7 @@
                         Week {{week_order[i]['week']}}
                         </a> 
                         (Chosen By {{week_order[i]['username']}})</p>
-                    <p> Group Rating: {{week_order[i]['group_rating']}} </p>
+                    <p> Group Rating: {{week_order[i]['group_rating']|round(2)}} </p>
                     <p> Your Rating: 
                         {% if week_order[i]['user_rating'] != False %}
                             {{week_order[i]['user_rating']}}
@@ -126,7 +126,7 @@
                         Week {{group_order[i]['week']}}
                         </a> 
                         (Chosen By {{group_order[i]['username']}})</p>
-                    <p> Group Rating: {{group_order[i]['group_rating']}} </p>
+                    <p> Group Rating: {{group_order[i]['group_rating']|round(2) }}} </p>
                     <p> Your Rating:
                         {% if group_order[i]['user_rating'] != False %}
                             {{group_order[i]['user_rating']}}
@@ -157,7 +157,7 @@
                         Week {{group_order[i]['week']}}
                         </a> 
                         (Chosen By {{group_order[i]['username']}})</p>
-                    <p> Group Rating: {{group_order[i]['group_rating']}} </p>
+                    <p> Group Rating: {{group_order[i]['group_rating']|round(2)}} </p>
                     <p> Your Rating:
                         {% if group_order[i]['user_rating'] != False %}
                             {{group_order[i]['user_rating']}}
@@ -195,7 +195,7 @@
                         Week {{user_order[i]['week']}}
                         </a> 
                         (Chosen By {{user_order[i]['username']}})</p>
-                    <p> Group Rating: {{user_order[i]['group_rating']}} </p>
+                    <p> Group Rating: {{user_order[i]['group_rating']|round(2) }} </p>
                     <p> Your Rating:     
                         {% if user_order[i]['user_rating'] != False %}
                             {{user_order[i]['user_rating']}}
@@ -235,7 +235,7 @@
                         </a> 
                         (Chosen By {{user_order[i]['username']}})</p>
 
-                    <p> Group Rating: {{user_order[i]['group_rating']}} </p>
+                    <p> Group Rating: {{user_order[i]['group_rating']|round(2) }} </p>
                     <p> Your Rating: 
                         {% if user_order[i]['user_rating'] != False %}
                             {{user_order[i]['user_rating']}}

@@ -244,9 +244,9 @@ section{
   margin: auto;
   padding-top: 1rem;
   width: 80%;
-  max-width: 10rem;
+  max-width: 25rem;
   height: auto;
-  max-height: 10rem;
+  max-height: 25rem;
 }
 
 .group-heading
@@ -389,8 +389,6 @@ right: 0;
 }
 
 .edit-comment{
-  position: absolute;
-  right: 0;
 
 }
 
@@ -455,6 +453,11 @@ right: 0;
 
 .delete-pic{
   display: inline;
+}
+
+.suggest-image{
+  max-width: 15rem;
+  height:auto
 }
 
 @keyframes intro-text{

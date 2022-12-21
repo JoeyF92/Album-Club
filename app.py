@@ -653,8 +653,17 @@ def rating(group_id, week):
                     return redirect(request.url)
                 flash("Sucessfully updating rating")
                 return redirect(request.url)    
+                
     else:
-        return redirect('/')
+        latest_week = db.execute("SELECT week_tracker FROM week WHERE group_id=?", group_id)
+        latest_week = latest_week[0]['week_tracker']
+        print(week)
+        print("ahoi")
+        print(latest_week)
+        if int(latest_week) == int(week):
+            return redirect("/new_week/" + str(group_id) + "/" + str(week))
+        else:
+            return redirect("/archive_week/" + str(group_id) + "/" + str(week))
 
 #route for users listening history
 @app.route("/listening_history")

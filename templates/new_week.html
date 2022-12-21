@@ -26,32 +26,54 @@
 
   
 
-    <!-- if user has suggested 1st album-->
+    <!-- if a user has suggested 1st album-->
     {% else %}
   
       <h4> So far <u>{{albums_suggested}}</u> users have made an entry </h4>
 
-      <div class="section-heading"> <p id="group_title"> Your current submission: </p> </div>
+      <div class="section-heading"> <p id="group_title">
+        {% if not next_submission %}
+          Enter a suggestion
+        {% else %}
+          Your current submission:
+        {% endif %}
+        </p> </div>
       <section>
         <a href=""> <img class="group-image" src="{{next_submission['artwork']}}"> </a>
-        <p> {{next_submission['artist']}} : {{next_submission['album']}} </p>
+        {% if not next_submission %}
+          <p> Empty </p>
+        {% else %}
+          <p> {{next_submission['artist']}} : {{next_submission['album']}} </p>
+        {% endif %}
         <button class="form-button edit-button" type="submit"> Edit </button>
 
         <div class="edit-reveal">
           <form class="form-group" action="/album_submission/{{group_id}}/{{week}}" enctype="multipart/form-data" method="post">
-            <p> Update next weeks suggestion </p>
+            {% if next_submission %}
+              <p> Update next weeks suggestion </p>
+            {% endif %}
+            
+            {% if next_submission %}
               <input class="form-field" id="album_artist" name="album_artist" placeholder="{{next_submission['album']}} " type="text" required>
               <input class="form-field" id="album_title" name="album_title" placeholder="{{next_submission['artist']}}" type="text" required>
               <input type="file" name="image" id="image" required></input>
               <input class="form-field" id="reason" name="reason" placeholder="{{next_submission['reason']}}" type="text" required> 
+            {% else %}
+            <input class="form-field" id="album_artist" name="album_artist" placeholder="Album" type="text" required>
+            <input class="form-field" id="album_title" name="album_title" placeholder="Artist" type="text" required>
+            <input type="file" name="image" id="image" required></input>
+            <input class="form-field" id="reason" name="reason" placeholder="Reason" type="text" required> 
+            {% endif %}
             <button class="standard-button" type="submit"> Submit</button>
           </form>
 
-          <p> Delete your submission </p>
-          <form form action="/album_submission/{{group_id}}/{{week}}" method="post">
-            <input type="hidden" id="delete" name="delete" value="True">
-            <button class="standard-button" type="submit"> Delete Your Suggestion </button>
-          </form>
+          {% if next_submission %}
+            <p> Delete your submission </p>
+            <form form action="/album_submission/{{group_id}}/{{week}}" method="post">
+              <input type="hidden" id="delete" name="delete" value="True">
+              <button class="standard-button" type="submit"> Delete Your Suggestion </button>
+            </form>
+          {% endif %}
         </div>
      </section>
 
@@ -216,7 +238,7 @@
         
         <div class="section-heading"> <p id="group_title"> Your entry for next week: </p> </div>
         <section>
-            <a href=""> <img class="group-image" src="{{next_submission['artwork']}}"> </a>
+            <a href=""> <img class="group-image suggest-image" src="{{next_submission['artwork']}}"> </a>
             <p> {{next_submission['artist']}} : {{next_submission['album']}} </p>
             <button class="form-button edit-button" type="submit"> Edit </button>
 
