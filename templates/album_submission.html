@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Album Submission
+{% endblock %}
+
+{% block main %}
+
+<h1> Welcome to Album Club </h1>
+
+
+<h3> Enter the album you'd like to submit </h3>
+
+<form action="/album_submission" method="post">
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="album_artist" name="album_artist" placeholder="Artist " type="text" required>
+        </div>
+
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="album_title" name="album_title" placeholder="Album Title " type="text" required>
+    </div>
+
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="artwork" name="artwork" placeholder="Paste in an Artwork URL " type="text" required>
+    </div>
+
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="reason" name="reason" placeholder="Feel free to add comments on why you selected this" type="text" required>
+    </div>
+
+    <button class="btn btn-primary" type="submit"> Submit</button>
+</form>
+
+
+{% endblock %}

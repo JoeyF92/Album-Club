@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+
+    <form action="/register" method="post" class="form-group">
+
+        <input class="form-field ani-field1" id="username" name="username" placeholder="Choose a Username" type="text" required>
+        
+        <input class="form-field ani-field2" id="password" name="password" placeholder="Choose Password" type="password" required>
+        
+        
+        <input class="form-field ani-field3" id="password" name="password_conf" placeholder="Confirm Password" type="password" required>
+        
+        
+        <input class="form-field ani-field4" id="email" name="email" placeholder="Enter your email" type="email" required>
+        
+        <button class="form-button ani-button" type="submit">Register</button>
+  </form>
+
+  
+{% endblock %}

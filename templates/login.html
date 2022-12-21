@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block main %}
+
+<div class="form-group">
+    <form action="/login" method="post">
+
+        <input class="form-field ani-field1" id="username" name="username" placeholder="Enter Username" type="text" required>
+        <br>
+        <input class="form-field ani-field2"  id="password" name="password" placeholder="Enter Password" type="password" required >
+        <br>
+        <button class="form-button" type="submit">Log In</button>
+    
+    </form>
+</div>
+
+
+
+{% endblock %}

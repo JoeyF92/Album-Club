@@ -1,0 +1,471 @@
+body
+{
+  /*background:#e6e6ff; */
+  background-image: url("backgroundpic.jpg"); 
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: 'Inconsolata', sans-serif;
+  font-weight: 700;
+  color: #34383c;
+}
+
+a{
+  color: #7d6e89;
+}
+
+a:hover{
+  color: #3f3845;
+}
+
+.navbar{
+  opacity: 30%;
+  background-color: #e6ebff !important;
+}
+
+
+.form-group{
+  position: relative;
+  margin: auto;
+  width: 55%;
+  max-width: 20rem;
+  padding: 20px 0 0;
+}
+
+.form-field {
+  width: 100%;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5%;
+  border: none;
+  background: none;
+  border-bottom: dotted;
+  border-width: 2px;
+  border-color: #e6e6ff;
+  padding: 3px;
+  text-align: center;
+ 
+}
+
+
+.form-field:last-of-type {
+  margin-bottom: 2rem;
+}
+
+.file-upload{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+ 
+}
+
+.form-field:focus{
+  outline: none;
+  border-width: 1.5px;
+  border-bottom: solid;
+  border-color: #e6e6ff
+}
+
+.form-button{
+  width: 9rem;
+  box-shadow: 0 6px #e6e6ff;
+  border: none;
+  color: black;
+  background: white;
+  position: relative;
+  text-transform: uppercase;
+  font-weight: 300;
+	letter-spacing: 2px;
+}
+
+.form-button:hover{
+  top: 2px;
+  color: #c2c2d3;
+  box-shadow: 0 4px #e6e6ff; 
+}
+
+.form-button:active{
+  top: 6px;
+  color: #90909c;
+  box-shadow: 0 0 #e6e6ff;
+}
+
+ani-button{
+  animation-name: intro-button;
+  animation-delay: 2s;
+  animation-duration: 0.4s;
+  animation-iteration-count: 3;
+}
+
+.standard-button:hover{
+  background-color: #ccccdc;
+}
+
+.standard-button:active
+{
+  border-width: 1px;
+}
+
+.slide-button{
+  margin: auto;
+  display: block;
+  margin: 1rem auto 1rem auto;
+}
+
+.error-message{
+  animation-name: flash-error;
+  animation-duration: 1s;
+  animation-iteration-count: 2;
+}
+
+.success-message
+{
+  animation-name: flash-success;
+  animation-duration: 1s;
+  animation-iteration-count: 2;
+}
+
+
+/* Rating slide stylings */ 
+.slidecontainer {
+  width: 100%; /* Width of the outside container */
+  margin-top: 2rem;
+  margin-bottom: 5rem;
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 50vw; /* Full-width */
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+
+
+
+.ani-field1
+{
+  animation-name: intro-text;
+  animation-delay: 0.5s;
+  animation-duration: 0.5s;
+}
+
+.ani-field2
+{
+  animation-name: intro-text;
+  animation-delay: 0.8s;
+  animation-duration: 0.5s;
+}
+
+.ani-field3
+{
+  animation-name: intro-text;
+  animation-delay: 1.1s;
+  animation-duration: 0.5s;
+}
+
+.ani-field4
+{
+  animation-name: intro-text;
+  animation-delay: 1.3s;
+  animation-duration: 0.5s;
+}
+
+
+/* No groups stylings*/
+
+
+.section-heading{
+  width: 85%;
+  max-width: 35rem;
+  margin: auto;
+  margin-bottom: 0;
+  margin-top: 2rem;
+  text-align: left;
+  padding-bottom: 0;
+}
+
+.section-heading > p
+{
+ margin: 0;
+ font-size: 1.2rem;
+}
+
+#group_title
+{
+  text-align: center;
+}
+
+.section-heading:not(:nth-of-type(1)){
+  margin-top: 5rem;
+}
+
+section{
+  margin-bottom: 2rem;
+  background-color: rgba(255,255,255, 0.3);
+  width: 85%;
+  max-width: 35rem;
+  margin: auto;
+  padding-bottom: 1rem;
+  border-radius: 2%;
+}
+
+
+
+.group-image
+{
+  margin: auto;
+  padding-top: 1rem;
+  width: 80%;
+  max-width: 30rem;
+}
+
+.group-heading
+{
+  padding-bottom: 0;
+  border-radius: 50%;
+}
+.page-heading
+{
+  margin: auto;
+
+}
+
+.edit-reveal{
+  display: none;
+}
+
+.general-div{
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.spaced-button{
+  margin-top: 2rem;
+}
+
+.comments-box{
+
+  display: block;
+  margin-top: 5px;
+  width: 70%;
+  max-width: 30rem;
+  height: 100%;
+  max-height: 20rem;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+
+.comment-container
+{
+width: 100%;
+display: flex;
+flex-direction: row;
+
+}
+
+.comment-container:nth-of-type(1){
+  padding-top: 0.5rem;
+}
+
+.comment-col1{
+
+  width: 20%;
+}
+
+.comment-col2{
+  width: 80%;
+  padding-right: 1rem;
+
+}
+
+.comment-col2 > hr{
+  margin-bottom: 0;
+
+}
+
+.comment-pic{
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.comment-pic > img{
+  width: 3rem;
+  max-height: 100%;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.comment-name{
+color: teal;
+text-align: left !important;
+
+}
+
+.comment-timestamp{
+display: block;
+padding-right: 1rem;
+color: #7b7b88;
+font-size: 0.75rem;
+
+}
+.comment-comment{
+  display: block;
+  text-align: left;
+  width: 100%;
+  position: relative;
+}
+
+.top-line-comment{
+ display: flex;
+ flex-direction: row;
+ justify-content: space-between;
+
+}
+
+.bottom-line-comment{}
+
+.leave-comment{
+  width: 70%;
+  max-width: 30rem;
+  margin: auto;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+
+.leave-comment-text 
+{
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+}
+
+.leave-comment-box{
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  opacity: 0.5;
+  height: 80px;
+}
+
+.comment-post{
+ position: absolute;
+right: 0;
+}
+
+.edit-comment{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+}
+
+.delete-comment{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.submit-edit{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+}
+
+.current-rating
+{
+ font-size: 1.5rem;
+ margin-top: 1rem;
+}
+
+
+.next-album{
+  margin-bottom: 3rem;
+  
+}
+
+.change-field{
+  margin: 3rem auto 3rem auto;
+}
+
+.change-image{
+  max-width: 12rem;
+  max-height: 12rem;
+  margin: auto;
+  margin-bottom: 2.5rem;
+}
+
+.change-image > img
+{ 
+  width: 100%;
+  height: auto;
+  border-radius: 70%;
+}
+
+.delete-pic{
+  display: inline;
+}
+
+@keyframes intro-text{
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+
+
+@keyframes intro-button {
+  0% {box-shadow: 0 6px #e6e6ff; top: 0;}
+  50% {box-shadow: 0 4px #e6e6ff; top: 2px; color: #e6e6ff}
+  100% {box-shadow: 0 0 #e6e6ff; top: 6px;}
+}
+
+@keyframes flash-error {
+  0% {color: transparent; display: block;}
+  10% {color: red;}
+  20% {color: transparent;}
+  30% {color: red;}
+  40% {color: transparent;}
+  50% {color: red;}
+}
+
+@keyframes flash-success {
+  0% {color: transparent; display: block;}
+  10% {color: rgb(104, 212, 172);}
+  20% {color: transparent;}
+  30% {color: rgb(104, 212, 172);}
+  40% {color: transparent;}
+  50% {color: rgb(104, 212, 172);}
+}

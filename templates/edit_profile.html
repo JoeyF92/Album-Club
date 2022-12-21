@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit Profile
+{% endblock %}
+
+{% block main %}
+
+<h3 class="edit-header"> Make Profile Changes: </h3>
+
+<hr>
+
+<div class="change-field">
+    <div class="change-image">
+        <img src="{{user['image']}}">
+    </div>
+    <form class="form-group" action="/edit_profile" enctype="multipart/form-data" method="post">
+        <input class="form-field" type="file" name="image" id="image"></input>
+        <input  type="submit" name="submit_button" value="edit_picture"/>
+        {% if not user['image'] == "https://res.cloudinary.com/dwxery2ci/image/upload/v1669651367/cs50/album_club/alien_nk3x3y.jpg"  %}
+        <input type="submit" name="submit_button" value="delete_picture"/>
+        {% endif %}
+    </form>
+
+
+
+<div class="change-field">
+    <form class="form-group" action="/edit_profile" method="post">
+            <input class="form-field" id="username" name="username" placeholder="{{user['username']}}" type="text" required>
+            <input  type="submit" name="submit_button" value="edit_username"/>
+    </form>
+</div>
+
+<div class="change-field">
+    <h4> Change Password </h4>
+    <form class="form-group"action="/edit_profile" method="post">
+        <div class="mb-3">
+            <input class="form-field" id="current_pass" name="current_pass" placeholder="Enter Current Password" type="password">
+            <input class="form-field"id="new_pass" name="new_pass" placeholder="Enter New Password" type="password">
+            <input class="form-field"id="new_pass_conf" name="new_pass_conf" placeholder="Confirm New Password" type="password">
+            <input type="submit" name="submit_button" value="edit_password"/>
+        </div>
+    </form>
+</div>
+
+
+<div class="change-field">
+    <h4> Delete Profile </h4>
+    <form action="/delete_profile" enctype="multipart/form-data" method="post">
+        <div class="mb-3">
+            <input type="password" name="password" id="password" placeholder="enter your password"></input>
+            <input type="submit" name="submit_button"/>
+        </div> 
+    </form>   
+</div>
+{% endblock %}

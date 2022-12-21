@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Groups
+{% endblock %}
+
+
+{% block main %}
+
+    {% if total_groups > 0 %}
+ 
+        <header class="group-heading">
+            <h4 class="page-heading"> Groups Joined </h4>
+        </header>
+
+            {% for i in range(total_groups)%}
+
+
+                <div class="section-heading"> <p id="group_title"> {{group_list[i]['group_name']}} </p> </div>
+                <section>
+                        <a href="/new_week/{{group_list[i]['group_id']}}/{{group_list[i]['week']}}"> <img class="group-image" src="{{group_list[i]['artwork']}}"> </a>
+                    <p> "{{group_list[i]['description']}}" </p>
+                    <p> Members: {{group_list[i]['member_count']}}  Group Admin: {{group_list[i]['username']}}</p>
+                    <p> View <a href="/new_week/{{group_list[i]['group_id']}}/{{group_list[i]['week']}}"> Current week </a></p>
+                    <p> View <a href="/archive_week/{{group_list[i]['group_id']}}"> Group History </a>  </p>
+                    <p> Access Code : {{group_list[i]['access_code']}} </p>
+
+        
+                </section>
+
+            {% endfor %}
+
+    {% endif %}
+
+
+    <div class="section-heading"> 
+        {% if total_groups < 1 %}
+            <p> Paste code to join a group..</p> </div>
+        {% else %}
+            <p> Join a new group </p> </div>
+        {% endif %}
+    </div>
+    
+    <section>
+        <form action="/groups" enctype="multipart/form-data" method="post" class="form-group">
+                <input class="form-field" id="group_code" name="group_code" placeholder="Enter Code" type="text">
+                <input type="submit" class="form-button" name="submit_button" value="join"/>
+        </form>
+    </section>   
+
+
+    <div class="section-heading"> <p> Alternatively.. start your own here: </p>  </div>
+    <section>
+        <form action="/groups" enctype="multipart/form-data" method="post" class="form-group">
+            <input class="form-field"  id="group_name" name="group_name" placeholder="Group Name" type="text">
+            <input type="file" class="file-upload" name="image" id="image"></input>
+            <input class="form-field"  id="description" name="description" placeholder="Enter a description (optional)" type="text">
+            <input type="submit" class="form-button" name="submit_button" value="create"/>
+        </form>
+    </section>
+
+    
+{% endblock %}

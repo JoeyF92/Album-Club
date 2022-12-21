@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block main %}
+
+{% if in_groups == False %}
+
+    <div class="section-heading"> <p> It doesn't look like you're part of any groups yet..</p> </div>
+        <section>
+            <form action="/groups" enctype="multipart/form-data" method="post" class="form-group">
+                    <input class="form-field" id="group_code" name="group_code" placeholder="Paste in a code to join a club" type="text">
+                    <input type="submit" class="form-button" name="submit_button" value="join"/>
+            </form>
+
+        </section>
+    
+
+    <div class="section-heading"> <p> Alternatively.. start your own here: </p>  </div>
+        <section>
+            <form action="/groups" enctype="multipart/form-data" method="post" class="form-group">
+                <input class="form-field"  id="group_name" name="group_name" placeholder="Group Name" type="text">
+                <input type="file" class="file-upload" name="image" id="image"></input>
+                <input class="form-field"  id="description" name="description" placeholder="Enter a description (optional)" type="text">
+                <input type="submit" class="form-button" name="submit_button" value="create"/>
+            </form>
+        </section>
+    
+{% else %} 
+
+    <p> Not falsey </p>
+
+
+
+{% endif %}
+
+
+
+
+{% endblock %}

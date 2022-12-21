@@ -1,0 +1,134 @@
+.sort-all{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 30rem;
+    margin: auto;
+    justify-content: space-around;
+   
+}
+
+.sort-section{
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.sort-section > div > p{
+    margin-bottom: 0;
+    height: 3rem;
+}
+
+
+
+
+.stat-button{
+    width: 4rem;
+    box-shadow: 0 6px #e6e6ff;
+    border: none;
+    color: black;
+    background: white;
+    position: relative;
+    text-transform: uppercase;
+    font-weight: 300;
+      letter-spacing: 2px;
+  }
+  
+  .stat-button:hover{
+    top: 2px;
+    color: #c2c2d3;
+    box-shadow: 0 4px #e6e6ff; 
+  }
+  
+  .stat-button:active{
+    top: 6px;
+    color: #90909c;
+    box-shadow: 0 0 #e6e6ff;
+  }
+
+.flex-container{
+    display: none;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: space-between;
+    margin-top: 3rem;
+}
+
+.flex-container1{
+  display: flex;
+}
+
+.flex-container:first-of-type{
+  display: flex;
+
+}
+  
+
+.album-contents{
+    width: 30%;
+    min-width: 6rem;
+    margin: 1rem;
+}
+
+.album-contents >img{
+    width: 100%;
+  }
+
+.album-contents > div{
+  position: relative;
+}
+
+  .album-contents > div >img{
+    width: 100%;
+  }
+
+.rank-no{
+    background-color: #ffffff;
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    top: 0;
+    left: 0%;
+    
+  }
+
+.group-rank{
+    background-color: #d7caf1;
+    opacity: 0.9;
+  }
+
+
+.week-rank{
+    background-color: #ededd1;
+    opacity: 0.9;
+  }
+
+
+.user-rank{
+  background-color: #f1d0ca;
+  opacity: 0.9;
+}
+
+.album-contents > p:first-of-type, p:nth-of-type(2){
+    margin: 0;
+    height: 3rem; 
+  }
+
+
+
+.stats-header{
+  width: 30%;
+  min-width: 8rem;
+  margin: auto;
+  margin-bottom: 3rem;
+}
+
+.stats-header > img
+{
+  width: 100%;
+  border-radius: 15%;
+}
+

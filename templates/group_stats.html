@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Group History
+{% endblock %}
+
+{% block main %}
+    <link href="/static/stats.css" rel="stylesheet">
+    <div class="stats-header">
+        <h3> {{group_info['group_name']}} archive </h3>
+        <p> Go to <a href="/new_week/{{group_id}}/{{latest_week}}">latest week</a></p>
+        <img src="{{group_info['artwork']}}">
+    </div>
+
+   
+
+    <div class="sort-all">
+        <div class="sort-section">
+            <div><p>Week  </p></div>
+            <div>
+                <button class="stat-button week-rank"> Asc</button>
+                <button class="stat-button week-rank"> Desc </button>
+            </div>
+        </div>
+
+        <div class="sort-section">
+            <div><p> Group Ranking </p></div>
+            <div>
+                <button class="stat-button group-rank"> High</button>
+                <button class="stat-button group-rank"> Low </button>
+            </div>
+        </div>
+
+        <div class="sort-section ">
+            <div><p> Your Ranking </p></div>
+            <div>
+                <button class="stat-button user-rank"> High </button>
+                <button class="stat-button user-rank"> Low </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        <!-- Sort By Week Asc -->
+        <div class="flex-container">
+            {% for i in range(week_order|length) %}    
+                <div class="album-contents">
+                    <p> {{i+1}} </p>
+                    <p>{{week_order[i]['artist']}}:</p>
+                    <p>{{week_order[i]['album']}}</p>
+                    <div>
+                        <img src="{{week_order[i]['artwork']}}">
+                        <h6 class="rank-no week-rank"> Wk{{i+1}} </h6>
+                    </div>
+                    <p><a href="/archive_week/{{group_id}}/{{week_order[i]['week']}}"> Week {{week_order[i]['week']}}</a> (Chosen By {{week_order[i]['username']}})</p>
+                    <p> Group Rating: {{week_order[i]['group_rating']}} </p>
+                    <p> Your Rating: {{week_order[i]['user_rating']}} </p>
+                </div>
+            {% endfor %}
+        </div>
+
+    
+
+        <!-- Sort By Week Desc -->
+        <div class="flex-container">
+            {% for i in range(week_order|length) | reverse %}    
+                <div class="album-contents">
+                    <p> {{i+1}} </p>
+                    <p>{{week_order[i]['artist']}}:</p>
+                    <p>{{week_order[i]['album']}}</p>
+                    <div>
+                        <img src="{{week_order[i]['artwork']}}">
+                        <h6 class="rank-no week-rank"> Wk{{i+1}} </h6>
+                    </div>
+                    <p><a href="/archive_week/{{group_id}}/{{week_order[i]['week']}}"> Week {{week_order[i]['week']}}</a> (Chosen By {{week_order[i]['username']}})</p>
+                    <p> Group Rating: {{week_order[i]['group_rating']}} </p>
+                    <p> Your Rating: {{week_order[i]['user_rating']}} </p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Sort By Group Rating Asc -->
+        <div class="flex-container">
+            {% for i in range(group_order|length) %}    
+                <div class="album-contents">
+                    <p> {{i+1}} </p>
+                    <p>{{group_order[i]['artist']}}:</p>
+                    <p>{{group_order[i]['album']}}</p>
+                    <div>
+                        <img src="{{group_order[i]['artwork']}}">
+                        <h6 class="rank-no group-rank"> #{{i+1}} </h6>
+                    </div>
+                    <p><a href="/archive_week/{{group_id}}/{{group_order[i]['week']}}"> Week {{group_order[i]['week']}}</a> (Chosen By {{group_order[i]['username']}})</p>
+                    <p> Group Rating: {{group_order[i]['group_rating']}} </p>
+                    <p> Your Rating: {{group_order[i]['user_rating']}} </p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Sort By Group Rating Desc -->
+        <div class="flex-container">
+            {% for i in range(group_order|length) | reverse %}    
+                <div class="album-contents">
+                    <p> {{i+1}} </p>
+                    <p>{{group_order[i]['artist']}}:</p>
+                    <p>{{group_order[i]['album']}}</p>
+                    <div>
+                        <img src="{{week_order[i]['artwork']}}">
+                        <h6 class="rank-no group-rank"> #{{i+1}} </h6>
+                    </div>
+                    <p><a href="/archive_week/{{group_id}}/{{group_order[i]['week']}}"> Week {{group_order[i]['week']}}</a> (Chosen By {{group_order[i]['username']}})</p>
+                    <p> Group Rating: {{group_order[i]['group_rating']}} </p>
+                    <p> Your Rating: {{group_order[i]['user_rating']}} </p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Sort By User Rating Asc -->
+        <div class="flex-container">
+            {% for i in range(user_order|length) %}    
+                <div class="album-contents">
+                    <p> {{i+1}} </p>
+                    <p>{{user_order[i]['artist']}}:</p>
+                    <p>{{user_order[i]['album']}}</p>
+                    <div>
+                        <img src="{{user_order[i]['artwork']}}">
+                        <h6 class="rank-no user-rank"> #{{i+1}} </h6>
+                    </div>
+                    <p><a href="/archive_week/{{group_id}}/{{user_order[i]['week']}}"> Week {{user_order[i]['week']}}</a> (Chosen By {{user_order[i]['username']}})</p>
+                    <p> Group Rating: {{user_order[i]['group_rating']}} </p>
+                    <p> Your Rating: {{user_order[i]['user_rating']}} </p>
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <!-- Sort By User Rating Desc -->
+        <div class="flex-container">
+            {% for i in range(user_order|length) | reverse %}    
+                <div class="album-contents">
+                    <p> {{i+1}} </p>
+                    <p>{{user_order[i]['artist']}}:</p>
+                    <p>{{user_order[i]['album']}}</p>
+                    <div>
+                        <img src="{{user_order[i]['artwork']}}">
+                        <h6 class="rank-no user-rank"> #{{i+1}} </h6>
+                    </div>
+                    <p><a href="/archive_week/{{group_id}}/{{user_order[i]['week']}}"> Week {{user_order[i]['week']}}</a> (Chosen By {{user_order[i]['username']}})</p>
+                    <p> Group Rating: {{user_order[i]['group_rating']}} </p>
+                    <p> Your Rating: {{user_order[i]['user_rating']}} </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="/static/js/group-stats.js"></script>
+{% endblock %}

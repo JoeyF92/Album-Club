@@ -1,0 +1,249 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Album Of The Week
+{% endblock %}
+
+{% block main %}
+
+  <!-- When Group is on week 0 -->
+  {% if week < 1 %}
+
+    <!-- if user hasnt suggested album yet-->
+    {% if albums_suggested == 0 %}
+    
+      <h4> To get started, enter in the first album suggestion </h4>
+
+      <form class="form-group" action="/album_submission/{{group_id}}/{{0}}"  enctype="multipart/form-data" method="post">
+          <input class="form-field" id="album_artist" name="album_artist" placeholder="Artist " type="text" required>
+          <input class="form-field" id="album_title" name="album_title" placeholder="Album Title " type="text" required>
+          <input type="file" name="image" id="image"></input>
+          <input class="form-field" id="reason" name="reason" placeholder="Why did you select this?" type="text" required>
+    
+        <button class="form-button" type="submit"> Submit</button>
+    
+      </form>
+
+  
+
+    <!-- if user has suggested 1st album-->
+    {% else %}
+  
+      <h4> So far <u>{{albums_suggested}}</u> users have made an entry </h4>
+
+      <div class="section-heading"> <p id="group_title"> Your current submission: </p> </div>
+      <section>
+        <a href=""> <img class="group-image" src="{{next_submission['artwork']}}"> </a>
+        <p> {{next_submission['artist']}} : {{next_submission['album']}} </p>
+        <button class="form-button edit-button" type="submit"> Edit </button>
+
+        <div class="edit-reveal">
+          <form class="form-group" action="/album_submission/{{group_id}}/{{week}}" enctype="multipart/form-data" method="post">
+            <p> Update next weeks suggestion </p>
+              <input class="form-field" id="album_artist" name="album_artist" placeholder="{{next_submission['album']}} " type="text" required>
+              <input class="form-field" id="album_title" name="album_title" placeholder="{{next_submission['artist']}}" type="text" required>
+              <input type="file" name="image" id="image" required></input>
+              <input class="form-field" id="reason" name="reason" placeholder="{{next_submission['reason']}}" type="text" required> 
+            <button class="standard-button" type="submit"> Submit</button>
+          </form>
+
+          <p> Delete your submission </p>
+          <form form action="/album_submission/{{group_id}}/{{week}}" method="post">
+            <input type="hidden" id="delete" name="delete" value="True">
+            <button class="standard-button" type="submit"> Delete Your Suggestion </button>
+          </form>
+        </div>
+     </section>
+
+     <div class="general-div">
+      <h4> When ready, generate the first AOTW </h4>
+      
+      <form action="/new_week/{{group_id}}/0" method="post">
+       <button class="form-button spaced-button" type="submit"> Begin </button>
+      </form>
+    </div>
+      
+
+    {% endif %}
+
+
+  {% else %}
+
+    {% if week == latest_week %}
+     
+      <h1> Week {{week}}: </h1>
+      <h2> {{ random_selection.artist }} </h2>
+      <img src="{{ random_selection.artwork }}" width="400px" height="400px">
+      <h3> {{ random_selection.album }} </h3>
+      <p> Selected by {{ user_name }}</p>
+      <p><em>"{{random_selection.reason}}"</em></p>
+      <!-- this breaks when em not propoerly sorted- look for unclosed element-->
+      
+
+     
+    {% else %}
+
+      <h1> Previous week {{week}}: </h1>
+      <h2> {{ archive[0].artist }} </h2>
+      <img src="{{ archive[0].artwork }}" width="400px" height="400px">
+      <h2> {{ archive[0].album }} </h2>
+      <p> Selected by {{archive[0].username}} who said "<em>{{archive[0].reason}}"</em></p>
+
+    {% endif %}   
+  
+    <div class="slidecontainer">
+      <form action="/rating/{{group_id}}/{{week}}" method="post"> 
+        <label for="rating"> </label>
+        <input type="range" min="1" max="100" value="{{ratings_dict['slider_value']}}" class="slider" name="rating" id="rating_slider">
+        <button class="form-button slide-button" type="submit">
+          {% if ratings_dict['user_rating'] %} 
+            Update 
+          {% else %}
+            Rate
+          {% endif %}
+            </button>
+      </form>
+
+      {% if ratings_dict['user_rating'] %} 
+  
+        Your rating: <span id="rating_text"></span></p> </>
+      
+      {% endif %} 
+      
+      <!-- Adding rating logic in here --> 
+      {% if ratings_dict['ratings_count'] >= 1 %}           
+        <p class="current-rating"> Current Score: {{ratings_dict['average_rating']}} ({{ratings_dict['ratings_count']}} votes) </p>  
+      {% endif %}
+    </div>
+    
+    
+
+    <section class="comments-box">
+      {% for i in range(comments|length) %}
+        <!-- show comments -check if it's an edited version- if so append edited to it -->
+        <div class="comment-container">
+          <div class="comment-col1"> 
+            <div class="comment-pic">
+              <img src="{{comments[i]['image']}}">
+            </div>
+          </div>
+          <div class="comment-col2">
+             <div class="top-line-comment">
+                <div class="comment-name">
+                  {{comments[i]['username']}}
+                </div> 
+                <div class="comment-timestamp"> 
+                  {{comments[i]['Timestamp']}} 
+                </div>
+              </div> 
+              <div class="comment-comment"> 
+                {{ comments[i]['comment'] }} 
+                {% if comments[i]['edited'] == 1 and not comments[i]['comment'] == '(comment deleted)'  %}      
+                  <p> <strong> (edited) </strong>  </p>
+                {% endif %} 
+                 <!-- show edit and delete comment buttons if the comment belongs to user -->
+                 {% if comments[i]['user_id'] == user and not comments[i]['comment'] == '(comment deleted)' %}
+                    <button class="edit-comment edit-button"> edit </button>
+                    <div class="edit-reveal">
+                      <form action="/comment/{{group_id}}/{{week}}" method="post">
+                        <input type="hidden" id="comment_id" name="comment_id" value="{{comments[i]['comment_id']}}">
+                        <input class="delete-comment"type="submit" name="submit_button" value="delete" />
+                      </form>
+              
+                      <form action="/comment/{{group_id}}/{{week}}" method="post">
+                        <label for="comment"> </label>
+                        <textarea class="comment-comment" type="text" id="comment" name="comment" placeholder="{{ comments[i]['comment'] }}"> </textarea>
+                        <input type="hidden" id="comment" name="comment_id" value="{{comments[i]['comment_id']}}">
+                        <input type="submit" name="submit_button" value="submit"/>
+                      </form>
+                    </div>
+                  
+
+                  {% endif %}
+              </div>
+              <hr>
+          </div>
+        </div>
+      {% endfor %}
+
+
+      
+    </section>
+
+
+      <form action="/comment/{{group_id}}/{{week}}" method="post" class="leave-comment">
+        <label class="leave-comment-text" for="comment"> Leave a comment.. </label>
+        <textarea class="leave-comment-box" type="text" id="comment" name="comment"> </textarea><br>
+        <input class="comment-post" type="submit" name="submit_button" value="post"/> 
+      </form>
+  
+
+    {% if week == latest_week %}
+
+      {% if generate_button == True %}
+        <p> There's {{albums_suggested}} album/s suggested for next week </p>
+      
+        <div class="next-album">
+          <form action="/new_week/{{group_id}}/{{week}}" method="post">
+            <button class="form-button" type="submit">Generate new week</button>
+          </form>
+        </div>
+      {% endif %}
+
+
+      {% if next_submission == None %}
+
+      <div class="general-div">
+        <h4> Add your next album suggestion: </h4>
+        
+        <form class="form-group" action="/album_submission/{{group_id}}/{{0}}"  enctype="multipart/form-data" method="post">
+          <input class="form-field" id="album_artist" name="album_artist" placeholder="Artist " type="text" required>
+          <input class="form-field" id="album_title" name="album_title" placeholder="Album Title " type="text" required>
+          <input type="file" name="image" id="image"></input>
+          <input class="form-field" id="reason" name="reason" placeholder="Why did you select this?" type="text" required>
+      
+          <button class="form-button" type="submit"> Submit</button>
+      
+        </form>
+      </div>
+      {% else %} 
+        
+        <div class="section-heading"> <p id="group_title"> Your entry for next week: </p> </div>
+        <section>
+            <a href=""> <img class="group-image" src="{{next_submission['artwork']}}"> </a>
+            <p> {{next_submission['artist']}} : {{next_submission['album']}} </p>
+            <button class="form-button edit-button" type="submit"> Edit </button>
+
+            <div class="edit-reveal">
+              <form class="form-group" action="/album_submission/{{group_id}}/{{week}}" enctype="multipart/form-data" method="post">
+                <p> Update next weeks suggestion </p>
+                  <input class="form-field" id="album_artist" name="album_artist" placeholder="{{next_submission['album']}} " type="text" required>
+                  <input class="form-field" id="album_title" name="album_title" placeholder="{{next_submission['artist']}}" type="text" required>
+                  <input type="file" name="image" id="image" required></input>
+                  <input class="form-field" id="reason" name="reason" placeholder="{{next_submission['reason']}}" type="text" required> 
+                <button class="standard-button" type="submit"> Submit</button>
+              </form>
+
+              <p> Delete your submission </p>
+              <form form action="/album_submission/{{group_id}}/{{week}}" method="post">
+                <input type="hidden" id="delete" name="delete" value="True">
+                <button class="standard-button" type="submit"> Delete Your Suggestion </button>
+              </form>
+            </div>
+        </section>
+        
+      {% endif %}
+    {% endif %}
+  
+    <br>
+
+    <a href="/archive_week/{{group_id}}"> Go to Group History </a>
+
+
+  {% endif %}
+    
+
+  <script type="text/javascript" src="/static/js/groups.js"></script>
+{% endblock %}
+
+

@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Listening History
+{% endblock %}
+
+
+{% block main %}
+<link href="/static/stats.css" rel="stylesheet">
+
+
+{% if ranked_history %}
+
+
+    <div class="sort-section ">
+        <div><p> Your Ranking </p></div>
+        <div>
+            <button class="stat-button"> High </button>
+            <button class="stat-button"> Low </button>
+        </div>
+    </div>
+
+    <!-- Sort By User Rating Asc -->
+    <div class="flex-container flex-container1">
+        {% for i in range(ranked_history|length) %}    
+            <div class="album-contents">
+                <p>{{ranked_history[i]['artist']}}:</p>
+                <p>{{ranked_history[i]['album']}}</p>
+                <div>
+                    <img src="{{ranked_history[i]['artwork']}}">
+                    <h6 class="rank-no"> {{i+1}} </h6>
+                </div>
+                <p> From "{{ranked_history[i]['group_name']}}" group </p>
+                <p> Your Rating:{{ranked_history[i]['rating']}} </p>
+            </div>
+        {% endfor %}
+    </div>
+
+    
+    <!-- Sort By User Rating Asc -->
+    <div class="flex-container">
+        {% for i in range(ranked_history|length)| reverse %}    
+            <div class="album-contents">
+                <p> {{i+1}} </p>
+                <p>{{ranked_history[i]['artist']}}:</p>
+                <p>{{ranked_history[i]['album']}}</p>
+                <div>
+                    <img src="{{ranked_history[i]['artwork']}}">
+                    <h6 class="rank-no"> {{i+1}} </h6>
+                </div>
+                <p> From "{{ranked_history[i]['group_name']}}" group </p>
+                <p> Your Rating:{{ranked_history[i]['rating']}} </p>
+            </div>
+        {% endfor %}
+    </div>
+
+{% else %}
+
+<p> Nothing to see yet..</p>
+
+<p> Head to <a href="/groups"> groups</a> to get started</p>
+
+{% endif %}
+
+<script type="text/javascript" src="/static/js/group-stats.js"></script>
+{% endblock %}
