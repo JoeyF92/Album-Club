@@ -55,8 +55,8 @@ def login_required(f):
     return decorated_function
 
 def seven_day_check(x):
-    d = datetime.datetime.strptime(x, "%Y-%m-%d") # Add .date() if hour doesn't matter
-    now = datetime.datetime.now()                 # Add .date() if hour doesn't matter
+    d = datetime.datetime.strptime(x, "%Y-%m-%d  %H:%M:%S.%f") 
+    now = datetime.datetime.now()                 
     return (d - now).days < 7
 
 
@@ -87,17 +87,6 @@ def image_upload(request):
             flash("error uploading image", "error")
             return None
 
-def image_delete(image_url):
-    #extract the public id from the pictures url - first split it from the / taking the last part, then from the . taking 2nd last part
-    image = image_url['image']
-    public_id = image.split("/")[-1]
-    public_id = public_id.split(".")[-2]
-    print(public_id)
-    delete_result = cloudinary.uploader.destroy(public_id, resource_type = "image")
-    #cloudinary.uploader.destroy(public_id, **options)
-    print("do we get here?")
-    print(delete_result)
-    if not delete_result:
-        return None
-    return delete_result
+
+
 

@@ -143,18 +143,18 @@
                 {% endif %} 
                  <!-- show edit and delete comment buttons if the comment belongs to user -->
                  {% if comments[i]['user_id'] == user and not comments[i]['comment'] == '(comment deleted)' %}
-                    <button class="edit-comment edit-button"> edit </button>
+                    <button class="edit-comment edit-button"> Edit </button>
                     <div class="edit-reveal">
-                      <form action="/comment/{{group_id}}/{{week}}" method="post">
-                        <input type="hidden" id="comment_id" name="comment_id" value="{{comments[i]['comment_id']}}">
-                        <input class="delete-comment"type="submit" name="submit_button" value="delete" />
-                      </form>
-              
+                      <!--delete comment -->
+                     
+
+                      <!--edit comment -->    
                       <form action="/comment/{{group_id}}/{{week}}" method="post">
                         <label for="comment"> </label>
                         <textarea class="comment-comment" type="text" id="comment" name="comment" placeholder="{{ comments[i]['comment'] }}"> </textarea>
                         <input type="hidden" id="comment" name="comment_id" value="{{comments[i]['comment_id']}}">
-                        <input type="submit" name="submit_button" value="submit"/>
+                        <input type="submit" class="comment-edit" name="submit_button" value="Edit"/>
+                        <input class="comment-del" type="submit" name="submit_button" value="Delete" />
                       </form>
                     </div>
                   
@@ -163,6 +163,7 @@
               </div>
               <hr>
           </div>
+          
         </div>
       {% endfor %}
 

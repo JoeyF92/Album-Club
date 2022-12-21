@@ -53,9 +53,22 @@
                         <img src="{{week_order[i]['artwork']}}">
                         <h6 class="rank-no week-rank"> Wk{{i+1}} </h6>
                     </div>
-                    <p><a href="/archive_week/{{group_id}}/{{week_order[i]['week']}}"> Week {{week_order[i]['week']}}</a> (Chosen By {{week_order[i]['username']}})</p>
+                    <p>
+                        {% if week_order[i]['week'] < latest_week %}
+                            <a href="/archive_week/{{group_id}}/{{week_order[i]['week']}}"> 
+                        {% else %}
+                            <a href="/new_week/{{group_id}}/{{week_order[i]['week']}}"> 
+                        {% endif %}   
+                        Week {{week_order[i]['week']}}
+                        </a> 
+                        (Chosen By {{week_order[i]['username']}})</p>
                     <p> Group Rating: {{week_order[i]['group_rating']}} </p>
-                    <p> Your Rating: {{week_order[i]['user_rating']}} </p>
+                    <p> Your Rating:
+                        {% if week_order[i]['user_rating'] != False %}
+                            {{week_order[i]['user_rating']}}
+                        {% else %}
+                            N/A
+                        {% endif %}
                 </div>
             {% endfor %}
         </div>
@@ -73,9 +86,22 @@
                         <img src="{{week_order[i]['artwork']}}">
                         <h6 class="rank-no week-rank"> Wk{{i+1}} </h6>
                     </div>
-                    <p><a href="/archive_week/{{group_id}}/{{week_order[i]['week']}}"> Week {{week_order[i]['week']}}</a> (Chosen By {{week_order[i]['username']}})</p>
+                    <p>
+                        {% if week_order[i]['week'] < latest_week %}
+                            <a href="/archive_week/{{group_id}}/{{week_order[i]['week']}}"> 
+                        {% else %}
+                            <a href="/new_week/{{group_id}}/{{week_order[i]['week']}}"> 
+                        {% endif %}   
+                        Week {{week_order[i]['week']}}
+                        </a> 
+                        (Chosen By {{week_order[i]['username']}})</p>
                     <p> Group Rating: {{week_order[i]['group_rating']}} </p>
-                    <p> Your Rating: {{week_order[i]['user_rating']}} </p>
+                    <p> Your Rating: 
+                        {% if week_order[i]['user_rating'] != False %}
+                            {{week_order[i]['user_rating']}}
+                        {% else %}
+                            N/A
+                        {% endif %}
                 </div>
             {% endfor %}
         </div>
@@ -91,9 +117,22 @@
                         <img src="{{group_order[i]['artwork']}}">
                         <h6 class="rank-no group-rank"> #{{i+1}} </h6>
                     </div>
-                    <p><a href="/archive_week/{{group_id}}/{{group_order[i]['week']}}"> Week {{group_order[i]['week']}}</a> (Chosen By {{group_order[i]['username']}})</p>
+                    <p>
+                        {% if group_order[i]['week'] < latest_week %}
+                            <a href="/archive_week/{{group_id}}/{{group_order[i]['week']}}"> 
+                        {% else %}
+                            <a href="/new_week/{{group_id}}/{{group_order[i]['week']}}"> 
+                        {% endif %}   
+                        Week {{group_order[i]['week']}}
+                        </a> 
+                        (Chosen By {{group_order[i]['username']}})</p>
                     <p> Group Rating: {{group_order[i]['group_rating']}} </p>
-                    <p> Your Rating: {{group_order[i]['user_rating']}} </p>
+                    <p> Your Rating:
+                        {% if group_order[i]['user_rating'] != False %}
+                            {{group_order[i]['user_rating']}}
+                        {% else %}
+                            N/A
+                        {% endif %}
                 </div>
             {% endfor %}
         </div>
@@ -106,12 +145,26 @@
                     <p>{{group_order[i]['artist']}}:</p>
                     <p>{{group_order[i]['album']}}</p>
                     <div>
-                        <img src="{{week_order[i]['artwork']}}">
+                        <img src="{{group_order[i]['artwork']}}">
                         <h6 class="rank-no group-rank"> #{{i+1}} </h6>
                     </div>
-                    <p><a href="/archive_week/{{group_id}}/{{group_order[i]['week']}}"> Week {{group_order[i]['week']}}</a> (Chosen By {{group_order[i]['username']}})</p>
+                    <p>
+                        {% if group_order[i]['week'] < latest_week %}
+                            <a href="/archive_week/{{group_id}}/{{group_order[i]['week']}}"> 
+                        {% else %}
+                            <a href="/new_week/{{group_id}}/{{group_order[i]['week']}}"> 
+                        {% endif %}   
+                        Week {{group_order[i]['week']}}
+                        </a> 
+                        (Chosen By {{group_order[i]['username']}})</p>
                     <p> Group Rating: {{group_order[i]['group_rating']}} </p>
-                    <p> Your Rating: {{group_order[i]['user_rating']}} </p>
+                    <p> Your Rating:
+                        {% if group_order[i]['user_rating'] != False %}
+                            {{group_order[i]['user_rating']}}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                </p>
                 </div>
             {% endfor %}
         </div>
@@ -125,11 +178,31 @@
                     <p>{{user_order[i]['album']}}</p>
                     <div>
                         <img src="{{user_order[i]['artwork']}}">
-                        <h6 class="rank-no user-rank"> #{{i+1}} </h6>
+                        <h6 class="rank-no user-rank">    
+                            {% if user_order[i]['user_rating'] != False %}
+                                #{{i+1}}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </h6>
                     </div>
-                    <p><a href="/archive_week/{{group_id}}/{{user_order[i]['week']}}"> Week {{user_order[i]['week']}}</a> (Chosen By {{user_order[i]['username']}})</p>
+                    <p>
+                        {% if user_order[i]['week'] < latest_week %}
+                            <a href="/archive_week/{{group_id}}/{{user_order[i]['week']}}"> 
+                        {% else %}
+                            <a href="/new_week/{{group_id}}/{{user_order[i]['week']}}"> 
+                        {% endif %}   
+                        Week {{user_order[i]['week']}}
+                        </a> 
+                        (Chosen By {{user_order[i]['username']}})</p>
                     <p> Group Rating: {{user_order[i]['group_rating']}} </p>
-                    <p> Your Rating: {{user_order[i]['user_rating']}} </p>
+                    <p> Your Rating:     
+                        {% if user_order[i]['user_rating'] != False %}
+                            {{user_order[i]['user_rating']}}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                </p>
                 </div>
             {% endfor %}
         </div>
@@ -144,11 +217,33 @@
                     <p>{{user_order[i]['album']}}</p>
                     <div>
                         <img src="{{user_order[i]['artwork']}}">
-                        <h6 class="rank-no user-rank"> #{{i+1}} </h6>
+                        <h6 class="rank-no user-rank">
+                            {% if user_order[i]['user_rating'] != False %}
+                                #{{i+1}}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </h6>
                     </div>
-                    <p><a href="/archive_week/{{group_id}}/{{user_order[i]['week']}}"> Week {{user_order[i]['week']}}</a> (Chosen By {{user_order[i]['username']}})</p>
+                    <p>
+                        {% if user_order[i]['week'] < latest_week %}
+                            <a href="/archive_week/{{group_id}}/{{user_order[i]['week']}}"> 
+                        {% else %}
+                            <a href="/new_week/{{group_id}}/{{user_order[i]['week']}}"> 
+                        {% endif %}   
+                        Week {{user_order[i]['week']}}
+                        </a> 
+                        (Chosen By {{user_order[i]['username']}})</p>
+
                     <p> Group Rating: {{user_order[i]['group_rating']}} </p>
-                    <p> Your Rating: {{user_order[i]['user_rating']}} </p>
+                    <p> Your Rating: 
+                        {% if user_order[i]['user_rating'] != False %}
+                            {{user_order[i]['user_rating']}}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
+    
                 </div>
             {% endfor %}
         </div>

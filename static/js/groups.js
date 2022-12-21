@@ -22,10 +22,12 @@ for (let i=0; i < length; i++)
     if (counter[i] % 2 == 1)
     {
       edit_form[i].style.display = "block";
+      edit_button[i].innerHTML = "Exit";
     }
     else
     {
       edit_form[i].style.display = "none";
+      edit_button[i].innerHTML = "Edit";
     }   
   }
 }

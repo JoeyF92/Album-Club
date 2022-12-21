@@ -10,7 +10,7 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, pass_hash, login_required, image_upload, image_delete, seven_day_check
+from helpers import apology, pass_hash, login_required, image_upload, seven_day_check
 
 
 # Configure application
@@ -40,18 +40,7 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    #work out what groups user is a part of if any
-    user = session.get('user_id')
-    user_groups = db.execute("SELECT group_id FROM user_groups WHERE user_id = ?", user)
-    #if user isnt in any groups render homepage:
-    if len(user_groups) < 1:
-        #create boolean varaible so we can do some rendering logic
-        in_groups = False
-        return render_template("homepage.html", in_groups=in_groups)
-    #if user is a member of a group already, redirect to the groups overview page
-    else:
-        in_groups = True
-        return redirect("/groups")
+    return redirect("/groups")
     
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -91,19 +80,19 @@ def register():
                 return redirect(request.url)
         #else add user, hashed password, email and stock image to the database
         db.execute("INSERT INTO users (username, hash_word, email, image) VALUES(?,?,?,?)", username, hashword, email, image)
-        #log user in- by finding new users id and adding to sessions
+        #log user in- by finding the new users id and adding to sessions
         new_user = db.execute("SELECT user_id FROM users WHERE username = ?", username)
-        #Remember which user has logged in
         session["user_id"] = new_user[0]["user_id"]
         # Redirect user to home page
         return redirect("/")
+    #if request is a get
     else:
         return render_template("register.html")
     
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # Forget any user_id
+    #if user submits login form
     if request.method == "POST":
         # Ensure username and password was submitted
         if not request.form.get("username"):
@@ -117,28 +106,27 @@ def login():
         if len(rows) != 1 or not check_password_hash(rows[0]["hash_word"], request.form.get("password")):
             flash("Username or Password incorrect", "error")
             return redirect(request.url)
+        # Log user in 
         session.clear()
-        # Remember which user has logged in
         session["user_id"] = rows[0]["user_id"]
         # Redirect user to home page
         return redirect("/")
-
-    # User reached route via GET (as by clicking a link or via redirect)
+    # if user requesting login page
     else:
         return render_template("login.html")
 
 @app.route("/logout")
 def logout():
-    """Log user out"""
-    # Forget any user_id
+    # Forget any user_id and redirect to login page
     session.clear()
-    # Redirect user to login form
+    flash("Logged out")
     return redirect("/")
 
 @app.route("/edit_profile" , methods=["GET", "POST"])
 @login_required
 def edit_profile():
     user = session.get('user_id')
+    #if user submitting form on edit_profile route
     if request.method == "POST":
         #if user editing username
         if request.form['submit_button'] == 'edit_username':
@@ -201,7 +189,7 @@ def edit_profile():
             return redirect(request.url)
         else:
             return redirect(request.url)
-        
+    #route to access edit page
     else:
         user = db.execute("SELECT * FROM users WHERE user_id=?", user)
         user = user[0]
@@ -256,12 +244,10 @@ def album_submission(group_id, week):
         access_check = db.execute("SELECT user_id FROM user_groups WHERE user_id = ? AND group_id = ?", user, group_id )
         if len(access_check) == 0:
             return apology("Sorry you arn't a member of that group", 400) 
-        
         #extract what week is coming up - and then save/update/delete the album to submissions for that week
         week = db.execute("SELECT week_tracker FROM week WHERE group_id=?", group_id)
         week = week[0]['week_tracker']
         upcoming_week = int(week) + 1
-        
         #check if user is looking to delete submission:
         if request.form.get("delete"):
             db.execute("DELETE FROM submissions WHERE group_id=? AND user_id=?", group_id, user)
@@ -280,7 +266,6 @@ def album_submission(group_id, week):
         reason = request.form.get("reason")
         #retrive uploaded image - and send to cloudinary
         artwork = image_upload(request)
-
         #check if there's already been a submission from that user - if there is, update rather than insert
         is_submission = db.execute("SELECT * FROM submissions WHERE group_id=? AND user_id=?", group_id, user)
         if  len(is_submission) > 0:
@@ -295,23 +280,16 @@ def album_submission(group_id, week):
         else:
             #check artwork uploaded - if it didnt redirect back to the page
             if artwork == None:
+                flash("Please upload artwork", "error")
                 return redirect(request.url)
             else:
                 #or insert new submission
                 db.execute("INSERT INTO submissions (week, user_id, album, artist, artwork, reason, group_id )VALUES (?, ?, ?, ?, ?, ?, ?)", upcoming_week, user, album, artist, artwork, reason, group_id)
-                week = week-1
+                flash("New album submitted")
                 #render info to album page        
                 return redirect(request.url)
     else:
         return redirect("/new_week/" + group_id + "/" + week)
-
-@app.route("/album_submission/<group_id>/<week>/delete", methods=["GET", "POST"])
-@login_required
-def album_submission_delete(group_id, week):
-    user = session.get('user_id')
-    group_id = group_id
-
-
 
 #route incase user submits new week with no extra info:
 @app.route("/new_week/")
@@ -325,8 +303,7 @@ def new_week_blank():
 def new_week_blank_week(group_id):
     return redirect("/")
 
-
-#get for showcasing current aotw, post for generating a new one:
+#get route for showcasing current aotw, post for generating a new one:
 @app.route("/new_week/<group_id>/<week>", methods=["GET", "POST"])
 @login_required
 def new_week(group_id, week):
@@ -334,21 +311,15 @@ def new_week(group_id, week):
         #check there are some albums to pick from
         week = int(week) 
         album_check = db.execute("SELECT * FROM submissions WHERE group_id=? AND week=?", group_id, week+1)
-        
         if len(album_check) == 0:
-            flash("Sorry there arnt any albums to pick from", "error")
+            flash("Sorry there are no any albums to pick from", "error")
             return redirect(request.url) 
-
         #add one to the groups current week in sql week tracker + reset the time stamp to now
         time = str(datetime.datetime.now())
-        new_week = week + 1
-        testing_sql = db.execute("UPDATE week SET week_tracker = week_tracker + 1, Timestamp=? WHERE group_id=?", time, group_id)
-        help_me = db.execute("SELECT * FROM week WHERE group_id=?", group_id)
-             
+        db.execute("UPDATE week SET week_tracker = week_tracker + 1, Timestamp=? WHERE group_id=?", time, group_id)
         #extract what week it is, so we can pass to template
         week = db.execute("SELECT week_tracker FROM week WHERE group_id=?", group_id)
         week = week[0]['week_tracker']
-        
         #pick a random entry from the submissions table:
         random_selection = db.execute("SELECT * FROM submissions WHERE user_id IN (SELECT user_id FROM submissions WHERE group_id=? ORDER BY RANDOM() LIMIT 1) AND group_id=?", group_id, group_id)
         album_picked = random_selection[0]['album']
@@ -356,19 +327,14 @@ def new_week(group_id, week):
         user_picked = random_selection[0]['user_id']
         artwork_picked = random_selection[0]['artwork']
         reason_picked = random_selection[0]['reason']
-        
         #work out username from id
         user_name = db.execute("SELECT username FROM users WHERE user_id = ?", user_picked)
         user_name = user_name[0]['username']
         random_selection = random_selection[0]
-
-        #add the album selected to the achive database
+        #add the album selected to the archive database
         db.execute("INSERT INTO archive (week, user_id, album, artist, artwork, reason, group_id)VALUES (?, ?, ?, ?, ?, ?, ?)", week, user_picked, album_picked, artist_picked, artwork_picked, reason_picked, group_id)
-        
         #remove the selected album for the submissions list, so it doesn't get repeated
         db.execute("DELETE FROM submissions WHERE user_id=? AND group_id=?", user_picked, group_id)
-
-        #return render_template("new_week.html", random_selection=random_selection, user_name=user_name, week=week)
         return redirect("/new_week/" + str(group_id) + "/" + str(week))
     else:
         #check user has access to that group
@@ -386,53 +352,60 @@ def new_week(group_id, week):
         else:
             #if we're on week 1 or greater do the following:
             if week > 0:
-                #extract what was selected last (as this is just a get request)
+                #extract what albun was selected last
                 random_selection = db.execute("SELECT * FROM archive WHERE week=? AND group_id=?", week, group_id)
                 random_selection = random_selection[0]
                 user_picked = random_selection['user_id']
                 user_name = db.execute("SELECT username FROM users WHERE user_id = ?", user_picked)
                 user_name = user_name[0]['username']
-
                 #extract comments associated with album
-                comments = db.execute("SELECT comment, Timestamp, username, image, users.user_id FROM comments JOIN users ON users.user_id=comments.user_id  WHERE week =? AND group_id=?", week, group_id)
-
-
-
+                comments = db.execute("SELECT comment, comment_id, Timestamp, username, image, users.user_id FROM comments JOIN users ON users.user_id=comments.user_id  WHERE week =? AND group_id=?", week, group_id)
                 #extract archive entry information.
                 archive = db.execute("SELECT artist, artwork, album, week, username FROM (SELECT * FROM archive INNER JOIN users ON users.user_id= archive.user_id) WHERE group_id = ?", group_id)
                 archive_len =(len(archive))
-
                 #work out how many people have suggested albums for next week
                 albums_suggested = len(db.execute("SELECT * FROM submissions  WHERE week = ? AND group_id = ?", week+1, group_id))
-                
-
                 #extract if user has submission ready for next week:
                 next_submission = db.execute("SELECT * FROM submissions WHERE user_id=? AND group_id=? AND week=?", user, group_id, week+1)
                 if not next_submission:
                     next_submission = None
                 else:
                     next_submission = next_submission[0]      
-
                 #see if user has rated it already, how many others have rated/ and what the average score is
                 user_rated = db.execute("SELECT * FROM rating WHERE user_id=? AND group_id=? AND week=?", user, group_id, week)
                 #create dict to pass through various ratings stats to template
                 ratings_dict = {}
                 ratings_dict['user_rating'] = None
-
-                #if we have a user rating for that album, append to dictionary. Creat slider value too to pass through
+                #if we have a user rating for that album, append to dictionary. Create slider value too to pass through
                 if user_rated:             
                     user_rated = user_rated[0]
                     ratings_dict['user_rating'] = user_rated['rating']
                     ratings_dict['slider_value'] = user_rated['rating']
                 else:
                     ratings_dict['slider_value'] = 50
-               
                 #work out average group rating + numbers of raters
                 groups_average =  db.execute("SELECT AVG(rating) FROM rating WHERE group_id=? AND week=?", group_id, week)
                 ratings_dict['average_rating'] = groups_average[0]['AVG(rating)']
                 ratings_count = db.execute("SELECT  COUNT(*) FROM rating WHERE group_id=? AND week=?", group_id, week)
                 ratings_dict['ratings_count'] = ratings_count[0]['COUNT(*)']
-                return render_template("new_week.html", random_selection=random_selection, user_name=user_name, week=week, comments=comments, archive=archive, archive_len=archive_len, latest_week=latest_week, group_id=group_id, next_submission=next_submission, user=user, user_rated=user_rated, albums_suggested=albums_suggested, ratings_dict=ratings_dict)
+                #logic for whether we show the user the button for generating a new week.
+                if albums_suggested < 1:
+                    generate_button = False
+                else:
+                    #if there are albums suggested, is the user the admin for the group?
+                    generate_button = db.execute("SELECT * FROM groups WHERE group_id=? AND admin_id=?", group_id, user)
+                    #if user isnt -check if it's been a week + there are submissions to choose from
+                    if not generate_button:
+                        #has it been a week yet? get timestamp from week tracker
+                        last_week = db.execute("SELECT Timestamp FROM week WHERE group_id =?", group_id)
+                        if seven_day_check(last_week[0]['Timestamp']):
+                            generate_button = True
+                        else:
+                            generate_button = False
+                    else:
+                        generate_button = True
+
+                return render_template("new_week.html", random_selection=random_selection, user_name=user_name, week=week, comments=comments, archive=archive, archive_len=archive_len, latest_week=latest_week, group_id=group_id, next_submission=next_submission, user=user, user_rated=user_rated, albums_suggested=albums_suggested, ratings_dict=ratings_dict, generate_button=generate_button)
             else:
                 albums_suggested = len(db.execute("SELECT * FROM submissions  WHERE week = ? AND group_id = ?", week+1, group_id))
                 archive_len = 0
@@ -459,7 +432,7 @@ def new_week(group_id, week):
                         generate_button = True
                 return render_template("new_week.html", week=week, archive_len=archive_len, albums_suggested=albums_suggested, group_id=group_id, user=user, generate_button=generate_button, next_submission=next_submission)
 
-
+#route for posting a comment on a groups aotw
 @app.route("/comment/<group_id>/<week>" , methods=["GET", "POST"])
 @login_required
 def comment(group_id, week):
@@ -469,29 +442,30 @@ def comment(group_id, week):
         access_check = db.execute("SELECT user_id FROM user_groups WHERE user_id = ? AND group_id = ?", user, group_id )
         if len(access_check) == 0:
             return apology("Sorry you arn't a member of that group", 403) 
-            
         #is it a delete or edit request?
         if request.form['submit_button'] == 'delete':
-            comment_id = request.form['comment_id']
+            comment_id = request.form.get('comment_id')
             db.execute("UPDATE comments SET comment = '(comment deleted)' WHERE comment_id=?", comment_id)
+            flash("Comment Deleted")
             return redirect(request.url)
          #if edit?
         if request.form['submit_button'] == 'edit':
             user_comment = request.form.get("comment")
             comment_id = request.form['comment_id']
             db.execute("UPDATE comments SET comment = ?, edited = 1 WHERE comment_id=?", user_comment, comment_id)
+            flash("Comment Deleted")
             return redirect(request.url)
         else:
-            #check comment is added
+            #user looking to post a comment
             if not request.form.get("comment"):
-                return apology("Please enter the comment, 403")
+                flash("No comment entered", "error")
+                return redirect(request.url)
             #extract comment and insert it into comments database for that week and group
             user_comment = request.form.get("comment")
             db.execute("INSERT INTO comments (week, user_id, comment, group_id) VALUES (?,?,?,?)", week, user, user_comment, group_id)
             return redirect("/new_week/" + group_id + "/" + week)
     else:
         return redirect("/new_week/" + group_id + "/" + week)
-
 
 
 #archiveroute for displaying all previous entries in a group:
@@ -506,18 +480,24 @@ def archive_page(group_id):
         #get group info to render to page
         group_info = db.execute("SELECT group_name, artwork, group_id FROM groups WHERE group_id = ?", group_id)
         group_info = group_info[0]
-        #get previous albums for that group with user rating, and average group rating- we'll order differently so we can render numbers on the page
-        week_order = db.execute("SELECT artist, album, group_rating, user_rating, week, username, artwork FROM ( SELECT artist, album, group_rating, week as q1week, username, artwork, q1.user_id as q1user_id FROM (SELECT AVG(rating) as group_rating, artist, album, week, user_id , artwork FROM (SELECT * FROM archive JOIN rating ON rating.week= archive.week WHERE archive.group_id = ?) GROUP BY week ORDER BY group_rating DESC) as q1 JOIN users ON users.user_id =q1.user_id ) as q2 JOIN (SELECT rating as user_rating, week FROM rating WHERE user_id=? AND group_id= ?)  as q3 ON q3.week = q1week ORDER BY week ", group_id, user, group_id)  
-        group_order = db.execute("SELECT artist, album, group_rating, user_rating, week, username, artwork FROM ( SELECT artist, album, group_rating, week as q1week, username, artwork, q1.user_id as q1user_id FROM (SELECT AVG(rating) as group_rating, artist, album, week, user_id , artwork FROM (SELECT * FROM archive JOIN rating ON rating.week= archive.week WHERE archive.group_id = ?) GROUP BY week ORDER BY group_rating DESC) as q1 JOIN users ON users.user_id =q1.user_id ) as q2 JOIN (SELECT rating as user_rating, week FROM rating WHERE user_id=? AND group_id= ?)  as q3 ON q3.week = q1week ORDER BY group_rating DESC ", group_id, user, group_id)  
-        user_order = db.execute("SELECT artist, album, group_rating, user_rating, week, username, artwork FROM ( SELECT artist, album, group_rating, week as q1week, username, artwork, q1.user_id as q1user_id FROM (SELECT AVG(rating) as group_rating, artist, album, week, user_id , artwork FROM (SELECT * FROM archive JOIN rating ON rating.week= archive.week WHERE archive.group_id = ?) GROUP BY week ORDER BY group_rating DESC) as q1 JOIN users ON users.user_id =q1.user_id ) as q2 JOIN (SELECT rating as user_rating, week FROM rating WHERE user_id=? AND group_id= ?)  as q3 ON q3.week = q1week ORDER BY user_rating DESC ", group_id, user, group_id)  
-        #delete line below
-        prev_albums = db.execute("SELECT artist, album, group_rating, user_rating, week, username, artwork FROM ( SELECT artist, album, group_rating, week as q1week, username, artwork, q1.user_id as q1user_id FROM (SELECT AVG(rating) as group_rating, artist, album, week, user_id , artwork FROM (SELECT * FROM archive JOIN rating ON rating.week= archive.week WHERE archive.group_id = ?) GROUP BY week ORDER BY group_rating DESC) as q1 JOIN users ON users.user_id =q1.user_id ) as q2 JOIN (SELECT rating as user_rating, week FROM rating WHERE user_id=? AND group_id= ?)  as q3 ON q3.week = q1week ORDER BY week ", group_id, user, group_id)  
+        #bringing together a dictionary of albums listened to by group - with average group ratings + the users individual rating
+        #cant use outer join in sqlite, so having to append user reviews on to each album,
+        album_hist = db.execute("SELECT artist, album, group_rating, week, username, artwork, q1.user_id as q1user_id , group_id FROM ( SELECT AVG(rating) as group_rating, artist, album, week, user_id , artwork, group_id FROM (SELECT * FROM archive JOIN rating ON rating.week= archive.week WHERE archive.group_id = ?) GROUP BY week ORDER BY group_rating DESC) as q1 JOIN users ON users.user_id =q1.user_id", group_id)
+        loop_len = len(album_hist)
+        for i in range(loop_len):
+            user_rating = db.execute("SELECT rating FROM rating WHERE week=? AND group_id=? AND user_id=?", album_hist[i]['week'], group_id, user )
+            if user_rating:
+                album_hist[i]['user_rating'] = user_rating[0]['rating']
+            else:
+                album_hist[i]['user_rating'] = False
+        #lambda functions to sort the list in order for week, user rating and group rating
+        user_order = (sorted(album_hist, key=lambda i: i['user_rating'], reverse = True))
+        group_order = (sorted(album_hist, key=lambda i: i['group_rating'], reverse = True))
+        week_order = (sorted(album_hist, key=lambda i: i['group_rating'], reverse = True))
         #work out latest week for group so we can do a link to direct to it
         latest_week = db.execute("SELECT week_tracker FROM week WHERE group_id=?", group_id)
         latest_week = latest_week[0]['week_tracker']
-        return render_template('group_stats.html', prev_albums=prev_albums, group_info=group_info , group_id=group_id, latest_week=latest_week, week_order=week_order, group_order=group_order, user_order=user_order)
-  
-
+        return render_template('group_stats.html', group_info=group_info , group_id=group_id, latest_week=latest_week, week_order=week_order, group_order=group_order, user_order=user_order)
 
 #archive route, for looking at previous aotw entrys
 @app.route("/archive_week/<group_id>/<week>")
@@ -528,36 +508,26 @@ def archive_route(group_id, week):
         access_check = db.execute("SELECT user_id FROM user_groups WHERE user_id = ? AND group_id = ?", user, group_id )
         if len(access_check) == 0:
             return apology("Sorry you arn't a member of that group", 403)        
-              
-        """ fix this bit """ """ and do logic for if week out of range"""
-        if week == None:
-            return apology("Something's gone wrong here, 403")
-                       
-        #repeat logic from new week form - but with the week changed:
-        #extract what was selected last (as this is just a get request)
+        #make sure user not trying look at week not in range
+        latest_week = db.execute("SELECT week_tracker FROM week WHERE group_id=?", group_id)
+        latest_week= latest_week[0]['week_tracker']
+        latest_week = int(latest_week)
+        week = int(week)
+        if week <= 0 or week > latest_week:
+            return apology("Sorry that week doesn't exist, 400")
+        #extract album for that week
         random_selection = db.execute("SELECT * FROM archive WHERE week=? AND group_id=?", week, group_id)
         random_selection = random_selection[0]
         user_picked = random_selection['user_id']
         user_name = db.execute("SELECT username FROM users WHERE user_id = ?", user_picked)
         user_name = user_name[0]['username']
-
         #extract comments associated with album
-        comments = db.execute("SELECT comment, Timestamp, username, image, users.user_id FROM comments JOIN users ON users.user_id=comments.user_id  WHERE week =? AND group_id=?", week, group_id)
-
-
+        comments = db.execute("SELECT comment, comment_id, Timestamp, username, image, users.user_id FROM comments JOIN users ON users.user_id=comments.user_id  WHERE week =? AND group_id=?", week, group_id)
         #extract archive entry information.
         archive = db.execute("SELECT artist, artwork, album, week, reason, username FROM (SELECT * FROM archive INNER JOIN users ON users.user_id= archive.user_id) WHERE group_id=?;", group_id)
         archive_len =(len(archive))
-        print(archive_len)
-        print("this is the one")
-        
-
-        #extract the latest week from the tracker - so we can put some logic in on the page on what is shown:
-        latest_week = db.execute("SELECT week_tracker FROM week WHERE group_id=?", group_id)
-        latest_week = latest_week[0]['week_tracker']
-        week = int(week)
-
         #see if user has rated it already, how many others have rated/ and what the average score is
+        week = int(week)
         user_rated = db.execute("SELECT * FROM rating WHERE user_id=? AND group_id=? AND week=?", user, group_id, week)
         #create dict to pass through various ratings stats to template
         ratings_dict = {}
@@ -575,7 +545,6 @@ def archive_route(group_id, week):
         ratings_count = db.execute("SELECT  COUNT(*) FROM rating WHERE group_id=? AND week=?", group_id, week)
         ratings_dict['ratings_count'] = ratings_count[0]['COUNT(*)']
         return render_template("new_week.html", random_selection=random_selection, user_name=user_name, week=week, comments=comments, archive=archive, archive_len=archive_len, latest_week=latest_week, group_id=group_id, ratings_dict=ratings_dict)
-        
 
  
 #route for accessing groups - or creating a new one
@@ -599,7 +568,6 @@ def groups():
                 return redirect(request.url)
             #generate a unique code for the group using uuid - which we can use for others to join
             group_uuid = str(uuid.uuid1())
-                    
             #insert the new group into sql group db
             db.execute("INSERT INTO groups (group_name, admin_id, artwork, description, access_code)VALUES (?, ?, ?, ?, ?)", group_name, admin_id, image, description, group_uuid)
             #update week tracker - setting week to zero for new group + setting the timestamp
@@ -608,10 +576,8 @@ def groups():
             group_id = group_id[0]['group_id']  
             time = str(datetime.datetime.now())
             db.execute("INSERT INTO week (week_tracker, group_id, Timestamp) VALUES (?, ?,? )", week, group_id, time)
-            
             #add the user id and group id to the user groups table
             db.execute("INSERT INTO user_groups (user_id, group_id) VALUES (?, ?)", admin_id, group_id)
-
             return redirect("groups")
         #route for if entering code to join a group
         else:
@@ -642,7 +608,6 @@ def groups():
         user = session.get('user_id')
         #find groups that the user is a member of
         user_groups = db.execute("SELECT group_id FROM user_groups WHERE user_id = ?", user)
-        
         #loop over user groups -so we can extract infomation from each group to send to template
         total_groups = len(user_groups)
         group_list = []
@@ -657,29 +622,17 @@ def groups():
             group_info["week"] = week_info[0]['week_tracker'] 
             #append that groups information to our groups list
             group_list.append(group_info)
-            
         return render_template("groups.html", group_list=group_list, total_groups=total_groups)
-
-
-
 
 @app.route("/rating/<group_id>/<week>" , methods=["GET", "POST"])
 @login_required
 def rating(group_id, week):
     user = session.get('user_id')
-    #extract the latest week for that group from the tracker - so we can put some logic in on what route to redirect to:
-    latest_week = db.execute("SELECT week_tracker FROM week WHERE group_id=?", group_id)
-    latest_week = latest_week[0]['week_tracker']
-    if latest_week > int(week):
-        redirect_route = "/archive_week/" + group_id + "/" + week
-    else:
-        redirect_route = "/new_week/" + group_id + "/" + week
-
     if request.method == "POST":
         #check there is a rating field submitted
         if not request.form.get("rating"):
             flash("No Rating provided", "error") 
-            return redirect(redirect_route)
+            return redirect(request.url)
         else:
             #check if there is a rating already from the user for that album
             rating = request.form.get("rating")
@@ -688,27 +641,25 @@ def rating(group_id, week):
                 rating_success = db.execute("INSERT INTO rating (rating, user_id, group_id, week) VALUES (?,?,?,?)", rating, user, group_id, week)
                 if not rating_success:
                     flash("Error updating rating", "error")
-                    return redirect(redirect_route)
+                    return redirect(request.url)
                 flash("Sucessfully rated")
-                return redirect(redirect_route)
+                return redirect(request.url)
             else:
-                print("something here yet")
                 rating_success = db.execute("UPDATE rating SET rating=? WHERE user_id=? AND group_id=? AND week=?", rating, user, group_id, week)
                 if not rating_success:
                     flash("Error updating rating", "error")
-                    return redirect(redirect_route)
+                    return redirect(request.url)
                 flash("Sucessfully updating rating")
-                return redirect(redirect_route)
-
-    
+                return redirect(request.url)    
     else:
-        return redirect(redirect_route)
+        return redirect('/')
 
 #route for users listening history
 @app.route("/listening_history")
 @login_required
 def history():
     user = session.get('user_id')
+    #get history of user's albums ordered by rating
     ranked_history = db.execute("SELECT album, q1artwork as artwork, artist, rating, group_name, q1group_id FROM ( SELECT album, artwork as q1artwork, artist, archive.group_id as q1group_id, rating FROM archive JOIN rating ON rating.group_id = archive.group_id AND rating.week =archive.week WHERE rating.user_id = (SELECT group_id FROM user_groups WHERE user_id = ?) ) JOIN groups on groups.group_id = q1group_id ORDER BY rating DESC", user)
     return render_template("listening_history.html", ranked_history=ranked_history)
 

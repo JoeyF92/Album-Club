@@ -244,7 +244,9 @@ section{
   margin: auto;
   padding-top: 1rem;
   width: 80%;
-  max-width: 30rem;
+  max-width: 10rem;
+  height: auto;
+  max-height: 10rem;
 }
 
 .group-heading
@@ -344,6 +346,7 @@ font-size: 0.75rem;
   text-align: left;
   width: 100%;
   position: relative;
+  margin-bottom: 2rem;
 }
 
 .top-line-comment{
@@ -388,8 +391,19 @@ right: 0;
 .edit-comment{
   position: absolute;
   right: 0;
-  bottom: 0;
 
+}
+
+.comment-edit{
+  position: absolute;
+  right: 4rem;
+  bottom: -2rem;
+}
+
+.comment-del{
+  position: absolute;
+  right: 0;
+  bottom: -2rem;
 }
 
 .delete-comment{
@@ -402,8 +416,12 @@ right: 0;
   position: absolute;
   right: 0;
   bottom: 0;
-
 }
+
+
+
+
+
 
 .current-rating
 {
